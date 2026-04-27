@@ -1,5 +1,5 @@
 context:
-  version: "0.4.40"
+  version: "0.4.41"
 
 package:
   name: flyctl
@@ -7,11 +7,11 @@ package:
 
 source:
   url: https://github.com/superfly/flyctl/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 13672801037ed9b95429ded00b596dae97b686e92d3832d85a1f8cc3a4db0385
+  sha256: 925aca75456818f34f59f4aa9acc5b2d4ca4321a317258915dfd152914a9eb6a
   target_directory: src
 
 build:
-  number: 1
+  number: 0
   script:
     - cd src
     - go-licenses save . --ignore=github.com/in-toto/attestation/go/v1 --ignore=github.com/in-toto/in-toto-golang --ignore=github.com/jmespath/go-jmespath --ignore=github.com/launchdarkly/go-jsonstream/v3 --ignore=github.com/launchdarkly/go-sdk-common/v3 --save_path=../library_licenses
