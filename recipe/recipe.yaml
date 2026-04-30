@@ -1,5 +1,5 @@
 context:
-  version: "0.4.43"
+  version: "0.4.44"
 
 package:
   name: flyctl
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/superfly/flyctl/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 840ce457a30c89b25ec75f9c5b216f591323fdaee3d10baa4b3b30bd5e2e1dfd
+  sha256: d201f1d73e0fc2a75c091129e8bb0b7aec6229c55ce077b7c521018b436b1b25
   target_directory: src
 
 build:
