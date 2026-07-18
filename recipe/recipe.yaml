@@ -8,13 +8,11 @@ package:
 source:
   url: https://github.com/superfly/flyctl/archive/refs/tags/v${{ version }}.tar.gz
   sha256: 1743e4c08d2f6c0503dca02ecabb8aa6d52d436b748c2de1cc825ff11356cf55
-  target_directory: src
 
 build:
   number: 0
   script:
-    - cd src
-    - go-licenses save . --ignore=github.com/in-toto/attestation/go/v1 --ignore=github.com/in-toto/in-toto-golang --ignore=github.com/jmespath/go-jmespath --ignore=github.com/launchdarkly/go-jsonstream/v3 --ignore=github.com/launchdarkly/go-sdk-common/v3 --save_path=../library_licenses
+    - go-licenses save . --save_path=library_licenses --ignore=github.com/in-toto/attestation/go/v1 --ignore=github.com/in-toto/in-toto-golang --ignore=github.com/jmespath/go-jmespath --ignore=github.com/launchdarkly/go-jsonstream/v3 --ignore=github.com/launchdarkly/go-sdk-common/v3
     - if: unix
       then:
         - BUILD_TIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -29,8 +27,7 @@ build:
       then:
         - for /f "usebackq delims=" %%T in (`powershell -Command "[DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')"`) do set BUILD_TIME=%%T
         - for /f "usebackq delims=" %%T in (`powershell -Command "((Invoke-RestMethod 'https://api.github.com/repos/superfly/flyctl/commits/v${{ version }}').sha).Substring(0, 7)"`) do set SHORT_COMMIT_HASH=%%T
-        - go build -v -o "%LIBRARY_BIN%"\flyctl.exe -ldflags="-s -w -X github.com/superfly/flyctl/internal/buildinfo.buildVersion=${{ version }} -X github.com/superfly/flyctl/internal/buildinfo.buildDate=%BUILD_TIME% -X github.com/superfly/flyctl/internal/buildinfo.commit=%SHORT_COMMIT_HASH%" -trimpath -tags production
-          .
+        - go build -v -o "%LIBRARY_BIN%"\flyctl.exe -ldflags="-s -w -X github.com/superfly/flyctl/internal/buildinfo.buildVersion=${{ version }} -X github.com/superfly/flyctl/internal/buildinfo.buildDate=%BUILD_TIME% -X github.com/superfly/flyctl/internal/buildinfo.commit=%SHORT_COMMIT_HASH%" -trimpath -tags production .
         # generate shell completions
         - mkdir "%LIBRARY_PREFIX%"\share\bash-completion\completions
         - mkdir "%LIBRARY_PREFIX%"\share\fish\vendor_completions.d
@@ -73,7 +70,7 @@ about:
     secrets, configure networking, and more.
   license: Apache-2.0
   license_file:
-    - src/LICENSE
+    - LICENSE
     - library_licenses/
   homepage: https://fly.io
   repository: https://github.com/superfly/flyctl
