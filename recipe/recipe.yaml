@@ -1,5 +1,5 @@
 context:
-  version: "0.4.71"
+  version: "0.4.72"
 
 package:
   name: flyctl
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/superfly/flyctl/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 1743e4c08d2f6c0503dca02ecabb8aa6d52d436b748c2de1cc825ff11356cf55
+  sha256: b8bfd0e9672d65e01c12b22a03eed19878d0f40e792550f0742e1601d9f98444
 
 build:
   number: 0
@@ -29,7 +29,8 @@ build:
       then:
         - for /f "usebackq delims=" %%T in (`powershell -Command "[DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')"`) do set BUILD_TIME=%%T
         - for /f "usebackq delims=" %%T in (`powershell -Command "((Invoke-RestMethod 'https://api.github.com/repos/superfly/flyctl/commits/v${{ version }}').sha).Substring(0, 7)"`) do set SHORT_COMMIT_HASH=%%T
-        - go build -v -o "%LIBRARY_BIN%"\flyctl.exe -ldflags="-s -w -X github.com/superfly/flyctl/internal/buildinfo.buildVersion=${{ version }} -X github.com/superfly/flyctl/internal/buildinfo.buildDate=%BUILD_TIME% -X github.com/superfly/flyctl/internal/buildinfo.commit=%SHORT_COMMIT_HASH%" -trimpath -tags production .
+        - go build -v -o "%LIBRARY_BIN%"\flyctl.exe -ldflags="-s -w -X github.com/superfly/flyctl/internal/buildinfo.buildVersion=${{ version }} -X github.com/superfly/flyctl/internal/buildinfo.buildDate=%BUILD_TIME% -X github.com/superfly/flyctl/internal/buildinfo.commit=%SHORT_COMMIT_HASH%" -trimpath -tags production
+          .
         # generate shell completions
         - if: build_platform == host_platform
           then:
