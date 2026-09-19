@@ -1,5 +1,5 @@
 context:
-  version: "0.4.101"
+  version: "0.4.104"
 
 package:
   name: flyctl
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/superfly/flyctl/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 55fac27166b8be47309a6e5980671f367c787a1ae1eefa2c6515c6ffe668628b
+  sha256: 9d4db7cd5adcaa4c224e53e6dcd9574fe356c162c9b62068007f156b9cc3d37f
 
 build:
   number: 0
@@ -18,20 +18,8 @@ build:
       # build main app and generate license data
       - let build_time = date now | format date "%Y-%m-%dT%H:%M:%SZ"
       - let short_commit_hash = (http get https://api.github.com/repos/superfly/flyctl/commits/v${{ version }}).sha | str substring 0..6
-      - go build
-        -o=($prefix)/bin/
-        -v
-        -ldflags=$'-s -w -X github.com/superfly/flyctl/internal/buildinfo.buildVersion=${{ version }} -X github.com/superfly/flyctl/internal/buildinfo.buildDate=($build_time) -X github.com/superfly/flyctl/internal/buildinfo.commit=($short_commit_hash)'
-        -trimpath
-        -tags production
-        .
-      - go-licenses save .
-        --save_path=library_licenses
-        --ignore=github.com/in-toto/attestation/go/v1
-        --ignore=github.com/in-toto/in-toto-golang
-        --ignore=github.com/jmespath/go-jmespath
-        --ignore=github.com/launchdarkly/go-jsonstream/v3
-        --ignore=github.com/launchdarkly/go-sdk-common/v3
+      - go build -o=($prefix)/bin/ -v -ldflags=$'-s -w -X github.com/superfly/flyctl/internal/buildinfo.buildVersion=${{ version }} -X github.com/superfly/flyctl/internal/buildinfo.buildDate=($build_time) -X github.com/superfly/flyctl/internal/buildinfo.commit=($short_commit_hash)' -trimpath -tags production .
+      - go-licenses save . --save_path=library_licenses --ignore=github.com/in-toto/attestation/go/v1 --ignore=github.com/in-toto/in-toto-golang --ignore=github.com/jmespath/go-jmespath --ignore=github.com/launchdarkly/go-jsonstream/v3 --ignore=github.com/launchdarkly/go-sdk-common/v3
       # generate shell completions
       - if: build_platform == host_platform
         then:
