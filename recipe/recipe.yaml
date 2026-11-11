@@ -18,16 +18,14 @@ build:
       # build main app and generate license data
       - let build_time = date now | format date "%Y-%m-%dT%H:%M:%SZ"
       - let short_commit_hash = (http get https://api.github.com/repos/superfly/flyctl/commits/v${{ version }}).sha | str substring 0..6
-      - go build -o=($prefix)/bin/ -v -ldflags=$'-s -w -X github.com/superfly/flyctl/internal/buildinfo.buildVersion=${{ version }} -X github.com/superfly/flyctl/internal/buildinfo.buildDate=($build_time) -X github.com/superfly/flyctl/internal/buildinfo.commit=($short_commit_hash)' -trimpath -tags production .
+      - go build -o=($prefix)/bin/ -v -ldflags=$'-s -w -X github.com/superfly/flyctl/internal/buildinfo.buildVersion=${{ version }} -X github.com/superfly/flyctl/internal/buildinfo.buildDate=($build_time) -X github.com/superfly/flyctl/internal/buildinfo.commit=($short_commit_hash)' -tags production .
       - go-licenses save . --save_path=library_licenses --ignore=github.com/in-toto/attestation/go/v1 --ignore=github.com/in-toto/in-toto-golang --ignore=github.com/jmespath/go-jmespath --ignore=github.com/launchdarkly/go-jsonstream/v3 --ignore=github.com/launchdarkly/go-sdk-common/v3
       # generate shell completions
       - if: build_platform == host_platform
         then:
-          - mkdir ($prefix)/share/bash-completion/completions ($prefix)/share/fish/vendor_completions.d ($prefix)/share/zsh/site-functions
-          - let bin = ($prefix)/bin/flyctl
-          - ^$bin completion bash | save ($prefix)/share/bash-completion/completions/flyctl
-          - ^$bin completion fish | save ($prefix)/share/fish/vendor_completions.d/flyctl.fish
-          - ^$bin completion zsh  | save ($prefix)/share/zsh/site-functions/_flyctl
+          - ^flyctl completion bash | save --force ($prefix)/share/bash-completion/completions/flyctl
+          - ^flyctl completion fish | save --force ($prefix)/share/fish/vendor_completions.d/flyctl.fish
+          - ^flyctl completion zsh  | save --force ($prefix)/share/zsh/site-functions/_flyctl
 
 requirements:
   build:
